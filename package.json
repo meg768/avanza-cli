@@ -1,0 +1,26 @@
+{
+  "name": "avanza-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "avanza.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meg768/avanza-cli.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/meg768/avanza-cli/issues"
+  },
+  "homepage": "https://github.com/meg768/avanza-cli#readme",
+  "dependencies": {
+    "avanza-mobile-client": "^1.0.29",
+    "dotenv": "^4.0.0",
+    "text-table": "^0.2.0",
+    "yargs": "^8.0.2",
+    "yow": "^1.0.80"
+  }
+}
