@@ -1,6 +1,5 @@
 var sprintf  = require('yow/sprintf');
 var isArray  = require('yow/is').isArray;
-var Avanza   = require('avanza-mobile-client');
 
 
 var Module = new function() {
@@ -10,70 +9,74 @@ var Module = new function() {
 		args.help('help').alias('help', 'h');
 
 		args.usage('Usage: $0 search [query] <options>');
-
-		args.option('debug',      {alias:'d', describe:'debug mode', default:false});
-		args.option('type',       {alias:'t', describe:'Type of search', default:false, demand:false, choices:['all', 'stock', 'fund', 'bond', 'index', 'certificate'], default:'all'});
-
+		args.option('type', {alias:'t', describe:'Type of search', default:false, demand:false, choices:['all', 'stock', 'fund', 'bond', 'index', 'certificate'], default:'all'});
 		args.wrap(null);
 
-		args.check(function(argv, foo) {
-
-			return true;
-
-		});
 
 	}
 
+
 	function run(argv) {
 
+		function search(text = 'Mauritz', limit = 10) {
+			return new Promise(function(resolve, reject) {
+				var Avanza = require('avanza-mobile-client');
+				var avanza = new Avanza();
+
+				avanza.login().then(function() {
+					return avanza.get({
+			            path: '/_mobile/market/search',
+			            query: {limit:limit, query:text}
+			        });
+				})
+				.then(function(reply) {
+					resolve(reply);
+				})
+				.catch(function(error) {
+					reject(error);
+				})
+			});
+		}
+
+
 		try {
-			var avanza = new Avanza({username: process.env.AVANZA_USERNAME, password:process.env.AVANZA_PASSWORD});
 
-			avanza.login().then(function() {
+			search(argv.query).then(function(reply) {
 
-				avanza.search({query: argv.query, limit:10}).then(function(json) {
+				if (argv.debug)
+					console.log(JSON.stringify(reply, null, 2));
+				else {
 
-					if (argv.debug)
-						console.log(JSON.stringify(json, null, '    '));
-					else {
+					var table = require('text-table');
 
-						var table = require('text-table');
+					var list = [];
+					var header = [];
+					var additionalHits = 0;
 
-						var list = [];
-						var header = [];
-						var additionalHits = 0;
+					header.push(['Type', 'ID', 'Name', 'Ticker', 'Price', 'Change %', 'Currency']);
 
-						header.push(['Type', 'ID', 'Name', 'Ticker', 'Price', 'Change %', 'Currency']);
+					reply.hits.forEach(function(hit) {
 
-						json.hits.forEach(function(hit) {
+						if (isArray(hit.topHits)) {
+							hit.topHits.forEach(function(topHit) {
+								list.push([hit.instrumentType, topHit.id, topHit.name, topHit.tickerSymbol, topHit.lastPrice == null ? '-' : topHit.lastPrice, topHit.changePercent == null ? '-' : topHit.changePercent, topHit.currency == null ? '-' : topHit.currency]);
+							});
 
-							if (isArray(hit.topHits)) {
-								hit.topHits.forEach(function(topHit) {
-									list.push([hit.instrumentType, topHit.id, topHit.name, topHit.tickerSymbol, topHit.lastPrice == null ? '-' : topHit.lastPrice, topHit.changePercent == null ? '-' : topHit.changePercent, topHit.currency == null ? '-' : topHit.currency]);
-								});
+						}
+						else {
+							additionalHits += hit.numberOfHits;
+						}
+					});
 
-							}
-							else {
-								additionalHits += hit.numberOfHits;
-							}
-						});
+					if (list.length > 0) {
+						console.log(table(header.concat(list), {align:['l', 'l', 'l', 'l', 'r', 'r', 'l']}));
 
-						if (list.length > 0) {
-							console.log(table(header.concat(list), {align:['l', 'l', 'l', 'l', 'r', 'r', 'l']}));
-
-							if (additionalHits > 0) {
-								console.log(sprintf('%d additional hits found.', additionalHits));
-							}
-
+						if (additionalHits > 0) {
+							console.log(sprintf('%d additional hits found.', additionalHits));
 						}
 
 					}
-
-
-				})
-				.catch(function(error) {
-					console.log(error);
-				});
+				}
 			})
 			.catch(function(error) {
 				console.log(error);

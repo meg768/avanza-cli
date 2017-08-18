@@ -15,6 +15,8 @@ var App = function() {
 
 			args.usage('Usage: $0 <command> [options]')
 
+			args.option('d', {alias:'debug', describe:'Debug mode', default:false});
+
 			args.command(require('./src/commands/accounts.js'));
 			args.command(require('./src/commands/positions.js'));
 			args.command(require('./src/commands/orders.js'));
@@ -24,26 +26,18 @@ var App = function() {
 			args.command(require('./src/commands/sell.js'));
 			args.command(require('./src/commands/market.js'));
 			args.command(require('./src/commands/overview.js'));
-			args.command(require('./src/commands/matrix.js'));
 			args.command(require('./src/commands/test.js'));
 
-/*
-			args.command(require('./src/commands/on.js'));
-			args.command(require('./src/commands/bell.js'));
-			args.command(require('./src/commands/scan.js'));
-			args.command(require('./src/commands/list.js'));
-			args.command(require('./src/commands/server.js'));
-			args.command(require('./src/commands/register.js'));
-*/
+
 			args.help();
 
 			args.check(function(argv) {
 				return true;
 			});
-
+			args.wrap(null);
 			args.demand(1);
 
-			args.argv;
+			return args.argv;
 
 		}
 		catch(error) {
