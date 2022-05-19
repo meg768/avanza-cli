@@ -4,7 +4,11 @@
   "description": "",
   "main": "avanza.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "goto-github": "open https://github.com/meg768/avanza-cli",
+    "goto-npm": "open https://www.npmjs.com/package/avanza-cli",
+    "git-pull": "git pull",
+    "git-commit": "git add -A && git commit -m '-' && git push",
+    "git-revert": "git reset --hard HEAD"
   },
   "repository": {
     "type": "git",
@@ -17,10 +21,11 @@
   },
   "homepage": "https://github.com/meg768/avanza-cli#readme",
   "dependencies": {
-    "avanza-mobile-client": "^1.0.29",
+    "avanza": "^3.0.0",
     "dotenv": "^4.0.0",
+    "easy-table": "^1.2.0",
     "text-table": "^0.2.0",
     "yargs": "^8.0.2",
-    "yow": "^1.0.80"
+    "yow": "^1.0.114"
   }
 }

@@ -1,58 +1,57 @@
-var sprintf  = require('yow/sprintf');
-var isArray  = require('yow/is').isArray;
-var Avanza   = require('../js/avanza.js');
 
+const Command = require('../scripts/Command.js');
+const sprintf = require('yow/sprintf');
+const EasyTable = require('easy-table');
 
-var Module = new function() {
+module.exports = class extends Command {
+	
 
-	function defineArgs(args) {
+	constructor() {
+		super({command:'overview', description:'Show Avanza overview'});
+	}
+	
+	async run() {
 
-		args.help('help').alias('help', 'h');
+		await this.login();
 
-		args.usage('Usage: $0 overview [id] <options>');
+		let overview = await this.avanza.getOverview();
 
-		args.option('debug',      {alias:'d', describe:'debug mode', default:false});
+		let table = new EasyTable();
+		let array = overview.accounts;
 
-		args.wrap(null);
+		let moneyPrinter = (value, width) => {
+			var text = Math.floor(value).toLocaleString();
+			return width ? EasyTable.padLeft(text, width) : text;
+		};
 
-		args.check(function(argv, foo) {
-
-			return true;
-
+		array = array.filter((item) => {
+			return item.ownCapital > 1;
 		});
 
-	}
-
-	function run(argv) {
-
-		try {
-			var avanza = new Avanza();
-
-			avanza.login().then(function() {
-				var options = {};
-				options.method = 'GET';
-				options.url = sprintf('https://www.avanza.se/_mobile/account/%s/overview', argv.id);
-				console.log(options);
-				return avanza.request(options);
-			})
-			.then(function(json) {
-				console.log(json);
-			})
-			.catch(function(error) {
-				console.log(error.message);
-
-			});
+		let accountType = {
+			'KapitalforsakringBarn': 'Kapitalförsäkring (barn)',
+			'Kapitalforsakring': 'Kapitalförsäkring',
+			'Investeringssparkonto': 'ISK',
+			'SparkontoPlus': 'Sparkonto',
+			'AktieFondkonto': 'Aktiedepå'
 		}
-		catch(error) {
-			console.log(error);
-		}
+
+		array.forEach((item) =>  {
+			console.log(item);
+			table.cell('Namn', item.name);
+			table.cell('Typ', accountType[item.accountType] == undefined ? '-' : accountType[item.accountType]);
+			table.cell('Konto', item.accountId);
+			table.cell('Värde', item.ownCapital, moneyPrinter);
+			table.newRow();
+		});
+
+//		table.sort(['Konto', 'Namn']);
+		table.total('Värde', {printer: moneyPrinter});			
+
+		this.log(table.toString());
+
+
 	}
-
-	module.exports.command  = 'overview <id>';
-	module.exports.describe = 'Overview';
-	module.exports.builder  = defineArgs;
-	module.exports.handler  = run;
-
 
 
 };

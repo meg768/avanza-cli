@@ -2,21 +2,34 @@
 
 require('dotenv').config();
 
-var sprintf = require('yow/sprintf');
+class App {
+	
 
-var App = function() {
+	constructor() {
+	}
 
+	addCommand(fileName) {
+		let yargs = require('yargs');
+	
+		let Command = require(fileName);
+		let cmd = new Command(); 
 
-	this.fileName = __filename;
+		yargs.command({
+			command: cmd.command,
+			builder: cmd.builder,
+			handler: cmd.handler,
+			desc:    cmd.description 
+		});  
+	}
 
-	function run() {
+	async run() {
 		try {
-			var args = require('yargs');
+			let args = require('yargs');
 
 			args.usage('Usage: $0 <command> [options]')
 
 			args.option('d', {alias:'debug', describe:'Debug mode', default:false});
-
+/*
 			args.command(require('./src/commands/accounts.js'));
 			args.command(require('./src/commands/positions.js'));
 			args.command(require('./src/commands/orders.js'));
@@ -27,7 +40,11 @@ var App = function() {
 			args.command(require('./src/commands/market.js'));
 			args.command(require('./src/commands/overview.js'));
 			args.command(require('./src/commands/test.js'));
+*/
 
+			this.addCommand('./src/commands/test.js');
+			this.addCommand('./src/commands/generate.js');
+			this.addCommand('./src/commands/overview.js');
 
 			args.help();
 
@@ -40,14 +57,13 @@ var App = function() {
 			return args.argv;
 
 		}
+
 		catch(error) {
 			console.log(error.stack);
 			process.exit(-1);
 		}
 
-	};
-
-	run();
+	}
 };
 
-module.exports = new App();
+new App().run();
