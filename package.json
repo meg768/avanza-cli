@@ -1,6 +1,6 @@
 {
   "name": "avanza-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "avanza.js",
   "bin": {
@@ -11,7 +11,8 @@
     "goto-npm": "open https://www.npmjs.com/package/avanza-cli",
     "git-pull": "git pull",
     "git-commit": "git add -A && git commit -m '-' && git push",
-    "git-revert": "git reset --hard HEAD"
+    "git-revert": "git reset --hard HEAD",
+    "npm-publish": "npm publish"
   },
   "repository": {
     "type": "git",
