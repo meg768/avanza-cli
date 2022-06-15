@@ -5,7 +5,7 @@ module.exports = class extends Command {
 	
 
 	constructor() {
-		super({command:'positions', description:'Show positions'});
+		super({command:'watchlists', description:'Show watchlists'});
 	}
 	
 	async options(yargs) {
@@ -13,7 +13,7 @@ module.exports = class extends Command {
 	}
 
 	async run() {
-		let json = await this.avanza.getPositions();
+		let json = await this.avanza.getWatchlists();
 		this.output(json);
 	}
 

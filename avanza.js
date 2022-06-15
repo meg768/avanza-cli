@@ -43,8 +43,16 @@ class App {
 */
 
 			this.addCommand('./src/commands/test.js');
-			this.addCommand('./src/commands/generate.js');
+			this.addCommand('./src/commands/auth.js');
 			this.addCommand('./src/commands/overview.js');
+			this.addCommand('./src/commands/account.js');
+			this.addCommand('./src/commands/accounts.js');
+			this.addCommand('./src/commands/login.js');
+			this.addCommand('./src/commands/watchlists.js');
+			this.addCommand('./src/commands/instrument.js');
+			this.addCommand('./src/commands/orderbooks.js');
+			this.addCommand('./src/commands/positions.js');
+			this.addCommand('./src/commands/summary.js');
 
 			args.help();
 

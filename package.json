@@ -4,9 +4,10 @@
   "description": "",
   "main": "avanza.js",
   "bin": {
-    "avanza": "avanza.js"
+    "ava": "avanza.js"
   },
   "scripts": {
+    "test": "./avanza.js overview --account 1367341",
     "goto-github": "open https://github.com/meg768/avanza-cli",
     "goto-npm": "open https://www.npmjs.com/package/avanza-cli",
     "git-pull": "git pull",
@@ -30,6 +31,6 @@
     "easy-table": "^1.2.0",
     "text-table": "^0.2.0",
     "yargs": "^8.0.2",
-    "yow": "^1.0.114"
+    "yow": "^1.0.118"
   }
 }

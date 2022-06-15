@@ -5,7 +5,7 @@ module.exports = class extends Command {
 	
 
 	constructor() {
-		super({command:'positions', description:'Show positions'});
+		super({command:'account <account>', description:'Show Avanza account'});
 	}
 	
 	async options(yargs) {
@@ -13,8 +13,7 @@ module.exports = class extends Command {
 	}
 
 	async run() {
-		let json = await this.avanza.getPositions();
-		this.output(json);
+		this.output(await this.avanza.getAccountOverview(this.argv.account));
 	}
 
 

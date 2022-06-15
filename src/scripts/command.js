@@ -1,16 +1,22 @@
+const Path = require('path');
+const os = require('os');
+const config = require('yow/config.js');
 
 
 module.exports = class Command {
 
     constructor(options) {
-        var {command = 'noname', description = 'No description'} = options;
+        let {command = 'noname', description = 'No description'} = options;
 
         this.command = command;
         this.description = description;
 		this.log = console.log;
         this.debug = () => {};
+		this.config = {};
 
-        this.builder = (yargs) => {
+		this.loadConfig();
+
+		this.builder = (yargs) => {
             this.options(yargs);
         };
 
@@ -18,58 +24,58 @@ module.exports = class Command {
             try {
 				this.argv = argv;
 				
+				this.debug = typeof this.argv.debug === 'function' ? this.argv.debug : (this.argv.debug ? this.log : () => {});	
+
 				await this.start();
                 await this.run(this.argv);
 				await this.stop();
             }
             catch (error) {
-                this.log(error.stack);
-                process.exit(-1);
+				let msg = '';
+
+				if (error instanceof Error) {
+					console.log(error.stack);
+				}
+				else {
+					console.log(error);
+				}
+
+				process.exit(-1);
             }            
         };
     }
 
 
+	loadConfig() {
+		try {
+			this.config = config.load(Path.join(Path.join(os.homedir(), '.avanza-cli'), 'config.json'));
+		}
+		catch(error) {
+		}
+	}
+
+	saveConfig() {
+		config.save();
+	}
+
     options(yargs) {
         yargs.usage(`Usage: $0 ${this.command}`);
-        yargs.option('debug', {alias: 'd', describe: 'Debug mode', type:'boolean', default:true});
+        yargs.option('debug', {alias: 'd', describe: 'Debug mode', type:'boolean', default:false});
         yargs.option('help', {alias: 'h', describe: 'Show help', type:'boolean'});
         yargs.alias('version', 'v');
     }
 
-	async login() {
-	
-		const Avanza = require('avanza');
-		
-		let avanza = new Avanza();
-
-		await avanza.authenticate({
-			username: process.env.USERNAME,
-			password: process.env.PASSWORD,
-			totpSecret: process.env.SECRET
-		});
-
-		return this.avanza = avanza;
-			  
-	}
-
-	async logout() {
-		if (this.avanza)
-			this.avanza.disconnect();
-
-		this.avanza = undefined;
-	}
-
-
 	async start() {
-		this.debug = typeof this.argv.debug === 'function' ? this.argv.debug : (this.argv.debug ? this.log : () => {});	
 	}
 
     async run() {
     }
 
 	async stop() {
-		this.logout();
+	}
+
+	output(json) {
+		console.log(JSON.stringify(json, null, '   '));
 	}
 
 };
