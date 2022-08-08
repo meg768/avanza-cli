@@ -1,5 +1,5 @@
 
-const Command = require('../scripts/command.js');
+const Command = require('../scripts/avanza-command.js');
 const AvanzaSummary = require('../scripts/avanza-summary.js');
 
 module.exports = class extends Command {
@@ -15,7 +15,7 @@ module.exports = class extends Command {
 		super.options(yargs);
 	}
 
-
+/*
 	async start() {
 		await this.summary.connect({username:this.config.username, password:this.config.password, secret:this.config.secret});
 	}
@@ -23,7 +23,7 @@ module.exports = class extends Command {
 	async stop() {
 		await this.summary.disconnect();
 	}
-
+*/
 	async run() {
 		this.output(await this.summary.fetchAccounts());
 //		this.output(await this.summary.fetchWatchList());

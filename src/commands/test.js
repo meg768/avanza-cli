@@ -1,29 +1,23 @@
 
-const Command = require('../scripts/Command.js');
-const sprintf = require('yow/sprintf');
-const EasyTable = require('easy-table');
+const Command = require('../scripts/avanza-command.js');
 
 module.exports = class extends Command {
 	
-
 	constructor() {
 		super({command:'test', description:'Test script'});
 	}
 	
 	async run() {
-
-		await this.login();
-
+        let EasyTable = require('easy-table');
 		let positions = await this.avanza.getPositions();
-
 
 		let table = new EasyTable();
 		let array = [];
 
-		positions.instrumentPositions.forEach(function(instrumentPosition) {
-			instrumentPosition.positions.forEach(function(position) {
+		positions.instrumentPositions.forEach((instrumentPosition) => {
+			instrumentPosition.positions.forEach((position) => {
 				array.push(position);
-				console.log(JSON.stringify(position));
+				this.debug(JSON.stringify(position));
 
 			});
 		});
@@ -31,7 +25,6 @@ module.exports = class extends Command {
 		let moneyPrinter = (value, width) => {
 			var text = Math.floor(value).toLocaleString();
 			return width ? EasyTable.padLeft(text, width) : text;
-
 		};
 
 		array.forEach((item) =>  {
