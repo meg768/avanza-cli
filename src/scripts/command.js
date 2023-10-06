@@ -23,7 +23,6 @@ module.exports = class Command {
         this.handler = async (argv) => {
             try {
 				this.argv = argv;
-				
 				this.debug = typeof this.argv.debug === 'function' ? this.argv.debug : (this.argv.debug ? this.log : () => {});	
 
 				await this.start();
@@ -60,7 +59,7 @@ module.exports = class Command {
 
     options(yargs) {
         yargs.usage(`Usage: $0 ${this.command}`);
-        yargs.option('debug', {alias: 'd', describe: 'Debug mode', type:'boolean', default:false});
+        yargs.option('debug', {alias: 'd', describe: 'Debug mode', type:'boolean', default:true});
         yargs.option('help', {alias: 'h', describe: 'Show help', type:'boolean'});
         yargs.alias('version', 'v');
     }

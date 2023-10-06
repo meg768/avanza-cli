@@ -26,9 +26,9 @@ class App {
 		try {
 			let args = require('yargs');
 
-			args.usage('Usage: $0 <command> [options]')
+			//args.usage('Usage: $0 <command> [options]')
 
-			args.option('d', {alias:'debug', describe:'Debug mode', default:false});
+			//args.option('d', {alias:'debug', describe:'Debug mode', default:true});
 /*
 			args.command(require('./src/commands/accounts.js'));
 			args.command(require('./src/commands/positions.js'));

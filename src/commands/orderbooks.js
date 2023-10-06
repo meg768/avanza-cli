@@ -9,7 +9,7 @@ module.exports = class extends Command {
 		super({command:'orderbooks', description:'Show orderbooks'});
 	}
 	
-	async options(yargs) {
+	options(yargs) {
 		super.options(yargs);
 		yargs.option('id', {alias:'i', describe:'Orderbook ID'});
 

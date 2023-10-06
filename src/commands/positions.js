@@ -8,7 +8,7 @@ module.exports = class extends Command {
 		super({command:'positions', description:'Show positions'});
 	}
 	
-	async options(yargs) {
+	options(yargs) {
 		super.options(yargs);
 	}
 

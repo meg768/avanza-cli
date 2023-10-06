@@ -9,7 +9,7 @@ module.exports = class extends Command {
 	}
 	
 
-	async options(yargs) {
+	options(yargs) {
 		super.options(yargs);
 		yargs.option('id', {alias:'i', describe:'Instrument ID'});
 		yargs.option('type', {alias:'t', describe:'Instrument type', default:'stock'});
